@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gif_content_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/gif_card"
+        layout="@layout/content_gif_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/error_placeholder"
+        layout="@layout/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

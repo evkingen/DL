@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Developers Life</string>
+    <string name="gif_by_category">Gif by category</string>
+    <string name="top_tab_name">Лучшие</string>
+    <string name="hot_tab_name">Горячие</string>
+    <string name="latest_tab_name">Последние</string>
+    <string name="network_error_description">Произошла ошибка при загрузке данных. Проверьте подключение к сети.</string>
+    <string name="repeat_btn_text">Повторить</string>
+    <string name="next_btn_description">fetch next gif</string>
+    <string name="prev_btn_description">fetch prev gif</string>
+    <string name="gif_content_description_template">Смешное описание гифки</string>
+
+    <string-array name="categories">
+        <item>@string/latest_tab_name</item>
+        <item>@string/top_tab_name</item>
+        <item>@string/hot_tab_name</item>
+    </string-array>
+
+    <string-array name="fragment_keys">
+        <item>latest</item>
+        <item>top</item>
+        <item>hot</item>
+    </string-array>
+
+</resources>
