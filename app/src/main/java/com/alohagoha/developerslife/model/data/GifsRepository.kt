@@ -7,13 +7,16 @@ import kotlinx.coroutines.withContext
 class GifsRepository(private val apiService: DevelopersLifeAPI) {
     private val storeList: MutableList<Gif> = mutableListOf()
 
-    private suspend fun getGifsPageByCategory(category: String, page: Int): List<Gif> = withContext(Dispatchers.IO) {
-        apiService.getGifs(category, page, true)?.result?.map { gifDTO ->
-            Gif(id = gifDTO.id,
+    private suspend fun getGifsPageByCategory(category: String, page: Int): List<Gif> =
+        withContext(Dispatchers.IO) {
+            apiService.getGifs(category, page, true)?.result?.map { gifDTO ->
+                Gif(
+                    id = gifDTO.id,
                     description = gifDTO.description.orEmpty(),
-                    gifUrl = gifDTO.gifUrl.orEmpty())
-        }.orEmpty()
-    }
+                    gifUrl = gifDTO.gifUrl.orEmpty()
+                )
+            }.orEmpty()
+        }
 
     suspend fun getGifByCategory(category: String, index: Int): Gif? {
         if (index > storeList.size - 1) {

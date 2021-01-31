@@ -9,6 +9,7 @@
     <string name="next_btn_description">fetch next gif</string>
     <string name="prev_btn_description">fetch prev gif</string>
     <string name="gif_content_description_template">Смешное описание гифки</string>
+    <string name="empty_request_error_description">По данному запросу не найдено новых gif</string>
 
     <string-array name="categories">
         <item>@string/latest_tab_name</item>

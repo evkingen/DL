@@ -11,10 +11,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val categoryList = resources.getStringArray(R.array.fragment_keys).asList()
-        val categoryTabNameList = resources.getStringArray(R.array.categories)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initUI()
+    }
+
+    private fun initUI() {
+        val categoryList = resources.getStringArray(R.array.fragment_keys).asList()
+        val categoryTabNameList = resources.getStringArray(R.array.categories)
         setSupportActionBar(binding.appToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.apply {

@@ -9,9 +9,9 @@
         android:id="@+id/gif_cv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        android:elevation="16dp"
-        app:cardCornerRadius="16dp"
+        android:layout_margin="@dimen/spacing_2x"
+        android:elevation="@dimen/gif_cardview_elevation"
+        app:cardCornerRadius="@dimen/gif_cardview_radius"
         app:layout_constraintBottom_toTopOf="@id/next_btn"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,12 +20,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/gif_by_category"
-            tools:src="@tools:sample/backgrounds/scenic"/>
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
 
             android:layout_gravity="center"
             android:indeterminate="true" />
@@ -33,14 +33,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/description_tv"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/description_text_spacing"
             android:layout_gravity="bottom"
-            android:textColor="@color/white"
             android:background="@drawable/gradient_description_view"
             android:gravity="center"
             android:maxLines="2"
-            tools:text="@string/gif_content_description_template"
-            android:padding="16dp" />
+            android:padding="@dimen/spacing_3x"
+            android:textColor="@color/white"
+            tools:text="@string/gif_content_description_template" />
     </androidx.cardview.widget.CardView>
 
 
@@ -48,8 +48,8 @@
         android:id="@+id/prev_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/spacing_2x"
+        android:layout_marginBottom="@dimen/spacing_3x"
         android:contentDescription="@string/prev_btn_description"
         android:src="@drawable/ic_undo_arrow"
         android:theme="@style/Theme.DevelopersLife.Fab.Back"
@@ -62,8 +62,8 @@
         android:id="@+id/next_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="@dimen/spacing_2x"
+        android:layout_marginBottom="@dimen/spacing_3x"
         android:contentDescription="@string/next_btn_description"
         android:src="@drawable/ic_right_arrow"
         android:theme="@style/Theme.DevelopersLife.Fab.Forward"

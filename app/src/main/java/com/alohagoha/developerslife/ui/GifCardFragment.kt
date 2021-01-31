@@ -2,13 +2,13 @@ package com.alohagoha.developerslife.ui
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alohagoha.developerslife.DevelopersLifeApp
 import com.alohagoha.developerslife.R
 import com.alohagoha.developerslife.databinding.FragmentGifCardBinding
@@ -19,10 +19,16 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import reactivecircus.flowbinding.android.view.clicks
 
-class GifCardFragment() : Fragment(R.layout.fragment_gif_card) {
+class GifCardFragment : Fragment(R.layout.fragment_gif_card) {
 
     private lateinit var gifsRepository: GifsRepository
+    private lateinit var category: String
 
     @Suppress("UNCHECKED_CAST")
     private val viewModel: GifCardViewModel by viewModels {
@@ -37,16 +43,24 @@ class GifCardFragment() : Fragment(R.layout.fragment_gif_card) {
     private val binding: FragmentGifCardBinding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        gifsRepository = GifsRepository((requireContext().applicationContext as DevelopersLifeApp).apiService)
+        gifsRepository =
+            GifsRepository((requireContext().applicationContext as DevelopersLifeApp).apiService)
         _binding = FragmentGifCardBinding.bind(view)
-        Log.d("TAG", this.toString())
-        val category = arguments?.getString(EXTRA_CATEGORY).orEmpty()
+        category = arguments?.getString(EXTRA_CATEGORY).orEmpty()
         viewModel.fetchStartGif(category)
-        binding.gifCard.prevBtn.setOnClickListener { viewModel.fetchPrevGif(category) }
-        binding.gifCard.nextBtn.setOnClickListener { viewModel.fetchNextGif(category) }
-        binding.errorPlaceholder.actionErrorBtn.setOnClickListener { viewModel.fetchStartGif(category) }
+        initListeners()
         viewModel.currentGif.observe(viewLifecycleOwner, ::renderUi)
         viewModel.isFirstGif.observe(viewLifecycleOwner, ::changeAccessButton)
+    }
+
+    @FlowPreview
+    fun initListeners() {
+        binding.gifCard.prevBtn.clicks().debounce(300).onEach { viewModel.fetchPrevGif(category) }
+            .launchIn(lifecycleScope)
+        binding.gifCard.nextBtn.clicks().debounce(300).onEach { viewModel.fetchNextGif(category) }
+            .launchIn(lifecycleScope)
+        binding.errorPlaceholder.actionErrorBtn.clicks().debounce(300)
+            .onEach { viewModel.fetchStartGif(category) }.launchIn(lifecycleScope)
     }
 
     private fun changeAccessButton(isFirst: Boolean) {
@@ -74,7 +88,7 @@ class GifCardFragment() : Fragment(R.layout.fragment_gif_card) {
             EmptyResult -> {
                 binding.errorPlaceholder.root.isVisible = true
                 binding.gifCard.root.isVisible = false
-                renderError("По данному запросу не найдено новых gif")
+                renderError(getString(R.string.empty_request_error_description))
             }
         }
     }
@@ -86,18 +100,32 @@ class GifCardFragment() : Fragment(R.layout.fragment_gif_card) {
     private fun renderGif(currentGif: Gif) {
         binding.gifCard.descriptionTv.text = currentGif.description
         Glide.with(this).load(currentGif.gifUrl)
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        binding.gifCard.progressBar.isVisible = false
-                        return false
-                    }
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    binding.gifCard.progressBar.isVisible = false
+                    binding.errorPlaceholder.root.isVisible = true
+                    binding.gifCard.root.isVisible = false
+                    renderError(getString(R.string.network_error_description))
+                    return false
+                }
 
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        binding.gifCard.progressBar.isVisible = false
-                        return false
-                    }
-                })
-                .centerCrop().into(binding.gifCard.gifIv)
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    binding.gifCard.progressBar.isVisible = false
+                    return false
+                }
+            })
+            .centerCrop().into(binding.gifCard.gifIv)
     }
 
     override fun onDestroyView() {
