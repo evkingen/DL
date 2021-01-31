@@ -12,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import com.alohagoha.developerslife.DevelopersLifeApp
 import com.alohagoha.developerslife.R
 import com.alohagoha.developerslife.databinding.FragmentGifCardBinding
-import com.alohagoha.developerslife.model.data.GifsRepository
 import com.alohagoha.developerslife.model.entities.Gif
+import com.alohagoha.developerslife.model.entities.GifCategory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -27,14 +27,14 @@ import reactivecircus.flowbinding.android.view.clicks
 
 class GifCardFragment : Fragment(R.layout.fragment_gif_card) {
 
-    private lateinit var gifsRepository: GifsRepository
+    //private lateinit var gifsRepository: GifsRepository
     private lateinit var category: String
 
     @Suppress("UNCHECKED_CAST")
     private val viewModel: GifCardViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return GifCardViewModel(gifsRepository) as T
+                return GifCardViewModel((requireContext().applicationContext as DevelopersLifeApp).gifsRepository) as T
             }
         }
     }
@@ -43,8 +43,6 @@ class GifCardFragment : Fragment(R.layout.fragment_gif_card) {
     private val binding: FragmentGifCardBinding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        gifsRepository =
-            GifsRepository((requireContext().applicationContext as DevelopersLifeApp).apiService)
         _binding = FragmentGifCardBinding.bind(view)
         category = arguments?.getString(EXTRA_CATEGORY).orEmpty()
         viewModel.fetchStartGif(category)
@@ -135,8 +133,8 @@ class GifCardFragment : Fragment(R.layout.fragment_gif_card) {
 
     companion object {
         private const val EXTRA_CATEGORY = "GifCardFragment:category"
-        fun newInstance(category: String): GifCardFragment {
-            val args = Bundle().apply { putString(EXTRA_CATEGORY, category) }
+        fun newInstance(category: GifCategory): GifCardFragment {
+            val args = Bundle().apply { putString(EXTRA_CATEGORY, category.key) }
             val fragment = GifCardFragment()
             fragment.arguments = args
             return fragment

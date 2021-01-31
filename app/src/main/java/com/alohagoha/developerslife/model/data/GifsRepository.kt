@@ -1,10 +1,12 @@
 package com.alohagoha.developerslife.model.data
 
 import com.alohagoha.developerslife.model.entities.Gif
+import com.alohagoha.developerslife.model.entities.GifStoreKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GifsRepository(private val apiService: DevelopersLifeAPI) {
+    private val storeMap: MutableMap<GifStoreKey, Gif> = mutableMapOf()
     private val storeList: MutableList<Gif> = mutableListOf()
 
     private suspend fun getGifsPageByCategory(category: String, page: Int): List<Gif> =
@@ -19,12 +21,13 @@ class GifsRepository(private val apiService: DevelopersLifeAPI) {
         }
 
     suspend fun getGifByCategory(category: String, index: Int): Gif? {
-        if (index > storeList.size - 1) {
+        if (storeMap[GifStoreKey(category, index)] == null) {
             val newPage = getGifsPageByCategory(category, index / PAGECOUNT)
             if (newPage.isEmpty()) return null
-            storeList.addAll(newPage)
+            newPage.mapIndexed { id, gif -> storeMap[GifStoreKey(category, index + id)] = gif }
         }
-        return storeList[index]
+        return storeMap[GifStoreKey(category, index)]
+//        return storeList[index]
     }
 
     companion object {

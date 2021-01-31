@@ -19,7 +19,7 @@
             android:id="@+id/gif_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/gif_by_category"
+            android:contentDescription="@string/gif_image"
             tools:src="@tools:sample/backgrounds/scenic" />
 
         <ProgressBar
@@ -40,7 +40,7 @@
             android:maxLines="2"
             android:padding="@dimen/spacing_3x"
             android:textColor="@color/white"
-            tools:text="@string/gif_content_description_template" />
+            tools:text="Смешное описание гифки" />
     </androidx.cardview.widget.CardView>
 
 

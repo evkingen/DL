@@ -3,6 +3,7 @@ package com.alohagoha.developerslife
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.alohagoha.developerslife.databinding.ActivityMainBinding
+import com.alohagoha.developerslife.model.entities.GifCategory
 import com.alohagoha.developerslife.ui.adapters.CategoryCardFragmentAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -17,14 +18,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-        val categoryList = resources.getStringArray(R.array.fragment_keys).asList()
-        val categoryTabNameList = resources.getStringArray(R.array.categories)
+        val categoryList = listOf(GifCategory.LATEST, GifCategory.TOP, GifCategory.HOT)
         setSupportActionBar(binding.appToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.apply {
             categoryPager.adapter = CategoryCardFragmentAdapter(this@MainActivity, categoryList)
             TabLayoutMediator(categoryTabs, categoryPager) { tab: TabLayout.Tab, i: Int ->
-                tab.text = categoryTabNameList[i]
+                tab.text = getString(categoryList[i].stringId)
             }.attach()
         }
     }
